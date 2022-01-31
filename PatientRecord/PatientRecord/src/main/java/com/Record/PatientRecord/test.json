@@ -1,0 +1,22 @@
+{
+    "firstName": "UNNI",
+    "lastName": "Ebuy",
+    "dob": "2019-04-28T14:45:15",
+    "email": "momonaebuy@Gmail.com",
+    "username": "momona",
+    "password": "123",
+    "phoneNumber": 919010727,
+    "role": {
+        "name": "PHYSICIAN"
+    },
+    "addresses": {
+        "state": "Iowa",
+        "zipCode": "52557",
+        "city": "Fairfied",
+        "streetAddress": "1000 N 455h"
+    },
+    "doctorSpecialist": "eye doctor"
+
+
+
+}

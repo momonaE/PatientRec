@@ -5,15 +5,21 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import javax.persistence.Embeddable;
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.Id;
 
-@Embeddable
+@Entity
 @AllArgsConstructor
 @NoArgsConstructor
 @Data
 public class Address {
-    private String state ;
-    private  String zipCode;
-    private  String city;
+    @Id
+    @GeneratedValue
+    private Long id;
+    private String state;
+    private String zipCode;
+    private String city;
     private String streetAddress;
 
 }
