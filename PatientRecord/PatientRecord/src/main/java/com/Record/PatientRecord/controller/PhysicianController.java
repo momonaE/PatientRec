@@ -41,7 +41,7 @@ public class PhysicianController {
     // System.out.println("get physician");
     // return physicianService.getAllPhysician();
     // }
-
+    @PreAuthorize("hasAuthority('PHYSICIAN')")
     @GetMapping("/{id}")
     public Physician getPhysician(@PathVariable Long id) {
         return physicianService.getPhysician(id);
@@ -82,7 +82,7 @@ public class PhysicianController {
         String fooResourceUrl = "http://localhost:8080/spring-rest/foos";
         ResponseEntity<String> response = restTemplate.getForEntity(fooResourceUrl + "/1", String.class);
             return null;
-            
+
     }
 
     @GetMapping("/viewMedicalRecord/{id}")

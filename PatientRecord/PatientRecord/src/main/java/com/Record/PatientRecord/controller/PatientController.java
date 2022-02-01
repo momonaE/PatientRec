@@ -11,6 +11,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.text.ParseException;
@@ -38,20 +39,24 @@ public class PatientController {
     public List<Patient> getAllPatients(){
         return  patientService.getAllPateints();
     }
+
     @GetMapping("/{id}")
     public Patient getPatient(@PathVariable Long id){
         return  patientService.getPatientById(id);
     }
  
-    @PostMapping("/")
-    public void  createPassenger(@RequestBody Patient passenger) {
-        patientService.savePatient(passenger);
-    }
+    // @PostMapping("/")
+    // @PreAuthorize("hasRole('ADMIN')")
+    // public void  createPatient(@RequestBody Patient patient) {
+    //     patientService.savePatient(patient);
+    // }
+    @PreAuthorize("hasAnyAuthority('PATIENT')")
     @PostMapping("/{id}")
     public void updatePatient(@PathVariable Long id,@RequestBody User patient){
         patientService.updatePatient(id,patient);
     }
-    
+
+    @PreAuthorize("hasAnyAuthority('ADMIN','PATIENT')")
     @PostMapping("/createAppointment/{id}")
     public  ResponseEntity<Appointment>  CreateAppointment(@PathVariable Long id, @RequestBody Physician name){
         //  if(patientService.createAppointment(id,name) == null){
@@ -61,19 +66,22 @@ public class PatientController {
 
     
     }
+    @PreAuthorize("hasAnyAuthority('ADMIN','PATIENT')")
     @GetMapping("/viewAppointment/{id}")
     public  ResponseEntity<List<String>>  ViewAppointment(@PathVariable Long id){
         List<String> p= patientService.viewAppointment(id);
        return new ResponseEntity<>(p,HttpStatus.OK);
     
     }
-
+    @PreAuthorize("hasAnyAuthority('ADMIN','PATIENT')")
     @GetMapping("/searchDoctors/{id}/{name}")
     public List<String> getDoctorsByname( @PathVariable Long id,@PathVariable String name) {
         
         return  patientService.getDoctors(id,name).stream().map((s)->
         s.getFirstName()).collect(Collectors.toList());
     }
+
+    @PreAuthorize("hasAnyAuthority('ADMIN','PATIENT')")
     @GetMapping("/searchDoctorsByDate/{id}/{date}")
     public LocalDate getDoctorsByDate( @PathVariable Long id,@PathVariable 
       @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate date) throws ParseException {

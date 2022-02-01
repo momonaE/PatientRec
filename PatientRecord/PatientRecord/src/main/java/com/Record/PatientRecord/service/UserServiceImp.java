@@ -46,6 +46,7 @@ public class UserServiceImp implements UserInterface, UserDetailsService {
     private PatientService patientService;
     @Autowired
     private AdminService adminService;
+
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
         log.info("User found in database :{}", username);
@@ -56,6 +57,10 @@ public class UserServiceImp implements UserInterface, UserDetailsService {
             log.info("User found in database :{}", username);
         }
         Collection<SimpleGrantedAuthority> authorities = new ArrayList<>();
+        user.getRoles().forEach(role -> {
+            System.out.println("from user"+role.getName());
+            authorities.add(new SimpleGrantedAuthority(role.getName()));
+        });
         return new org.springframework.security.core.userdetails.User(user.getUsername(), user.getPassword(),
                 authorities);
     }
@@ -70,25 +75,29 @@ public class UserServiceImp implements UserInterface, UserDetailsService {
         log.info("Saving new user {} to the database ", user.getUsername());
         user.setPassword(passwordEncoder.encode(user.getPassword()));
 
-        if(user.getRoles().get(0).getName()!=null){
+        if (user.getRoles().get(0).getName() != null) {
+
             userRepo.save(user);
-         User users= userRepo.findByUsername(user.getUsername());
-        if (user.getRoles().get(0).getName().equals("PHYSICIAN")) {
-            physicianService.addPhysician(PhysicianHelper.build(users));
-        }
+            // roleRepo.save("ROLE_PATIENT");
+            //saveRole(new Role(null, "ROLE_PATIENT"));
+           // addRoleToUser(user.getUsername(), "ROLE_PATIENT");
+            User users = userRepo.findByUsername(user.getUsername());
+            if (user.getRoles().get(0).getName().equals("PHYSICIAN")) {
+                physicianService.addPhysician(PhysicianHelper.build(users));
+            }
 
-        if (user.getRoles().get(0).getName().equals("PATIENT")) {
-            patientService.savePatient(PatientHelper.build(users));
-        }
-        if (user.getRoles().get(0).getName().equals("ADMIN")) {
-            adminService.addAdmin(AdminHelper.build(users));
-        }  
-        return userRepo.save(user);
-    }else{
-        log.error("user need to select it's role");
+            if (user.getRoles().get(0).getName().equals("ROLE_PATIENT")) {
+                patientService.savePatient(PatientHelper.build(users));
+            }
+            if (user.getRoles().get(0).getName().equals("ADMIN")) {
+                adminService.addAdmin(AdminHelper.build(users));
+            }
+            return userRepo.save(user);
+        } else {
+            log.error("user need to select it's role");
 
-        return null;
-    }
+            return null;
+        }
     }
 
     @Override
@@ -104,6 +113,7 @@ public class UserServiceImp implements UserInterface, UserDetailsService {
 
         User user = userRepo.findByUsername(username);
         Role role = roleRepo.findByName(rolename);
+        System.out.println("from where" + role.getName());
         user.getRoles().add(role);
     }
 

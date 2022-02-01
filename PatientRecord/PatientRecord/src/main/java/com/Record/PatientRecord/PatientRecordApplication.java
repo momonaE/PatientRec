@@ -25,7 +25,6 @@ public class PatientRecordApplication {
     public RestTemplate getRestTemplate() {
         return new RestTemplate();
     }
-	
 	@Bean
 	PasswordEncoder passwordEncoder(){
 		return new BCryptPasswordEncoder();
